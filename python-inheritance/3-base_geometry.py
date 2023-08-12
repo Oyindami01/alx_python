@@ -21,7 +21,7 @@ class BaseGeometry:
     Methods:
         None
     """
-    def __dir__():
+    def __dir__(self):
         """
         Get the list of attributes from the parent class (object class)
         """
