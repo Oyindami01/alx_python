@@ -9,7 +9,8 @@ This repo is a collection of python scripts. It uses SQLAlchemy to interact with
 - Challenges
 - Credits
 
-#### DESCRIPTION
+### DESCRIPTION
+
 The scripts in this object_relational mapping is related to managing data in a MySQL database. We were provided with database and were asked to query such database.
 
 #### SCRIPTS
