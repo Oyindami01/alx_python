@@ -1,6 +1,7 @@
 import MySQLdb
 import sys
 
+
 def list_cities_by_state(username, password, database, state_name):
     try:
         # Connect to the MySQL server using the context manager
@@ -12,20 +13,21 @@ def list_cities_by_state(username, password, database, state_name):
             port=3306
         ) as connection:
             cursor = connection.cursor()
-            
+
             # Use a single execute() statement to fetch the results
             query = (
-                "SELECT GROUP_CONCAT(cities.name ORDER BY cities.id ASC SEPARATOR ', ') "
+                "SELECT cities.name "
                 "FROM cities "
                 "JOIN states ON cities.state_id = states.id "
-                "WHERE states.name = %s"
+                "WHERE states.name = %s "
+                "ORDER BY cities.id ASC"
             )
             cursor.execute(query, (state_name,))
-            
-            # Fetch and print the result
-            result = cursor.fetchone()[0]
-            if result:
-                print(result)
+
+            # Fetch and print the results
+            results = cursor.fetchall()
+            for row in results:
+                print(row[0])
     except MySQLdb.Error as e:
         print("MySQL Error:", e)
 
