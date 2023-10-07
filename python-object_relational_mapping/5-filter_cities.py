@@ -12,23 +12,24 @@ def list_cities_by_state(username, password, database, state_name):
             db=database,
             port=3306
         ) as connection:
-
+            
             cursor = connection.cursor()
-
+            
             # Use a single execute() statement to fetch the results
             query = (
-                "SELECT GROUP_CONCAT(cities.name SEPARATOR ', ') "
+                "SELECT GROUP_CONCAT(cities.name "
+                "ORDER BY cities.id ASC SEPARATOR ', ') "
                 "FROM cities "
                 "JOIN states ON cities.state_id = states.id "
                 "WHERE states.name = %s"
             )
             cursor.execute(query, (state_name,))
-
+            
             # Fetch and print the result
-            result = cursor.fetchone()
-
-            if result[0]:
-                print(result[0])
+            result = cursor.fetchone()[0]
+            
+            if result:
+                print(result)
     except MySQLdb.Error as e:
         print("MySQL Error:", e)
 
