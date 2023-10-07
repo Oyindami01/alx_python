@@ -55,7 +55,7 @@ def list_cities(username, password, database):
             for row in rows:
                 print(row)
     except MySQLdb.Error as e:
-        print("MYSQL Error:", e)
+        print("MySQL Error:", e)
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -65,4 +65,3 @@ if __name__ == "__main__":
         password = sys.argv[2]
         database = sys.argv[3]
         list_cities(username, password, database)
-           
