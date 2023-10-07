@@ -14,10 +14,8 @@ Arguments:
     <database>: Database name.
 """
 
-
 import MySQLdb
 import sys
-
 
 def list_cities(username, password, database):
     """
@@ -30,9 +28,8 @@ def list_cities(username, password, database):
     Returns:
         None
     """
-
     try:
-        #  Connect to the server using the context manager
+        # Connect to the server using the context manager
         with MySQLdb.connect(
             host='localhost',
             user=username,
