@@ -1,6 +1,7 @@
 import MySQLdb
 import sys
 
+
 def list_cities_by_state(username, password, database, state_name):
     try:
         # Connect to the MySQL server using the context manager
