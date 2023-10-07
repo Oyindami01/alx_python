@@ -15,8 +15,10 @@ Arguments:
     <database>: Database name.
 """
 
+
 import MySQLdb
 import sys
+
 
 def search_states(username, password, database, search_name):
     """
@@ -31,6 +33,7 @@ def search_states(username, password, database, search_name):
     Returns:
         None
     """
+
     try:
         # Connect to the server using context manager
         with MySQLdb.connect(
