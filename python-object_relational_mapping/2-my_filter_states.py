@@ -18,6 +18,7 @@ Arguments:
 import MySQLdb
 import sys
 
+
 def search_states(username, password, database, search_name):
     """
     Searches for and lists states from the hbtn_0e_0_usa database
@@ -31,7 +32,6 @@ def search_states(username, password, database, search_name):
     Returns:
         None
     """
-    
     try:
         # Connect to the server using context manager
         with MySQLdb.connect(
@@ -41,7 +41,7 @@ def search_states(username, password, database, search_name):
             db=database,
             port=3306
         ) as connection:
-            # Create a cursor that aids interaction with database
+            # Create a cursor that aids interaction with the database
             cursor = connection.cursor()
             # Create the SQL query using user input
             query_template = (
