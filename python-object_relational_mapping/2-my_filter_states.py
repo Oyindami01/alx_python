@@ -15,10 +15,8 @@ Arguments:
     <database>: Database name.
 """
 
-
 import MySQLdb
 import sys
-
 
 def search_states(username, password, database, search_name):
     """
