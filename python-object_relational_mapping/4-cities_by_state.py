@@ -17,6 +17,7 @@ Arguments:
 import MySQLdb
 import sys
 
+
 def list_cities(username, password, database):
     """
     Fetches and lists all cities from the hbtn_0e_4_usa database.
