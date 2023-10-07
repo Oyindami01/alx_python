@@ -15,10 +15,8 @@ Arguments:
     <search_name>: State name to search for.
 """
 
-
 import MySQLdb
 import sys
-
 
 def list_states_with_name(username, password, database, search_name):
     """
@@ -33,7 +31,6 @@ def list_states_with_name(username, password, database, search_name):
     Returns:
         None
     """
-
     try:
         # Connect to the server using context manager
         with MySQLdb.connect(
@@ -72,4 +69,3 @@ if __name__ == "__main__":
         database = sys.argv[3]
         search_name = sys.argv[4]
         list_states_with_name(username, password, database, search_name)
-        
