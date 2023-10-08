@@ -1,36 +1,54 @@
-#!/usr/bin/python3
-
+import csv
 import json
 import requests
 import sys
 
-base_url = 'https://jsonplaceholder.typicode.com/'
+def export_tasks_to_csv(user_id):
+    # Define the URL of the API
+    url = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
 
+    try:
+        # Send a GET request to the API
+        response = requests.get(url)
 
-def do_request():
-    '''Performs request'''
-    response = requests.get(base_url + 'users/')
-    if response.status_code != 200:
-        return print('Error: status_code:', response.status_code)
-    users = response.json()
+        # Check if the request was successful
+        if response.status_code == 200:
+            tasks = response.json()
 
-    response = requests.get(base_url + 'todos/')
-    if response.status_code != 200:
-        return print('Error: status_code:', response.status_code)
-    todos = response.json()
+            # Define a dictionary to store tasks for all users
+            all_user_tasks = {}
 
-    data = {}
-    for user in users:
-        user_todos = [todo for todo in todos
-                      if todo.get('userId') == user.get('id')]
-        user_todos = [{'username': user.get('username'),
-                       'task': todo.get('title'),
-                       'completed': todo.get('completed')}
-                      for todo in user_todos]
-        data[str(user.get('id'))] = user_todos
+            # Loop through the tasks and organize them by user ID
+            for task in tasks:
+                user_id = task["userId"]
+                username = "Replace with actual username"  # Replace with the actual username retrieval logic
+                task_info = {
+                    "username": username,
+                    "task": task["title"],
+                    "completed": task["completed"]
+                }
 
-    with open('todo_all_employees.json', 'w') as file:
-        json.dump(data, file)
+                if user_id not in all_user_tasks:
+                    all_user_tasks[user_id] = []
 
-if __name__ == '__main__':
-    do_request()
+                all_user_tasks[user_id].append(task_info)
+
+            # Define the JSON filename
+            json_filename = "todo_all_employees.json"
+
+            # Write the tasks to a JSON file
+            with open(json_filename, 'w') as json_file:
+                json.dump(all_user_tasks, json_file)
+
+            print(f"Tasks exported to {json_filename}")
+        else:
+            print("Failed to retrieve tasks. API request failed.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <USER_ID>")
+    else:
+        user_id = int(sys.argv[1])
+        export_tasks_to_csv(user_id)
