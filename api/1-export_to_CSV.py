@@ -27,7 +27,7 @@ def export_tasks_to_csv(user_id):
                 for task in tasks:
                     writer.writerow({
                         "USER_ID": user_id,
-                        "USERNAME": user["name"],  # Replace with the actual username retrieval logic
+                        "USERNAME": "Replace with actual username",  # Replace with the actual username retrieval logic
                         "TASK_COMPLETED_STATUS": str(task["completed"]),
                         "TASK_TITLE": task["title"]
                     })
