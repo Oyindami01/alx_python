@@ -1,25 +1,49 @@
-#!/usr/bin/python3
-import csv
-import json
 import requests
+import csv
 import sys
 
-if __name__ == "__main__":
-    employee_id = sys.argv[1]
-    api_request = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
-    api_request1 = requests.get("https://jsonplaceholder.typicode.com/users/{}/todos".format(employee_id))
-    data = api_request.text
-    pjson = json.loads(data)
-    data1 = api_request1.text
-    pjson1 = json.loads(data1)
+def export_to_csv(user_id):
+    try:
+        # Fetch user data
+        user_url = 'https://jsonplaceholder.typicode.com/users/' + str(user_id)
+        response = requests.get(user_url)
+        user_data = response.json()
 
-    #export data to csv data
-    filename = "{}.csv".format(employee_id)
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, quoting = csv.QUOTE_ALL)
-        for item in pjson1:
-            user_id = employee_id
-            username = pjson['username']
-            task_completed_status = item['completed']
-            task_title = item['title']
-            writer.writerow([user_id, username, task_completed_status, task_title])
+        # Fetch tasks for the user
+        tasks_url = 'https://jsonplaceholder.typicode.com/todos?userId=' + str(user_id)
+        response = requests.get(tasks_url)
+        tasks = response.json()
+
+        # Create a CSV file named USER_ID.csv
+        csv_filename = str(user_id) + '.csv'
+
+        # Open the CSV file for writing
+        with open(csv_filename, mode='w', newline='') as csv_file:
+            fieldnames = ["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"]
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            
+            # Write the CSV header
+            writer.writeheader()
+
+            # Write task data to the CSV file
+            for task in tasks:
+                writer.writerow({
+                    "USER_ID": user_id,
+                    "USERNAME": user_data['username'],
+                    "TASK_COMPLETED_STATUS": str(task['completed']),
+                    "TASK_TITLE": task['title']
+                })
+
+        print(f'Data exported to {csv_filename}')
+    
+    except requests.exceptions.RequestException as e:
+        print("Error fetching data:", e)
+    except Exception as e:
+        print("An error occurred:", e)
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <USER_ID>")
+    else:
+        user_id = int(sys.argv[1])
+        export_to_csv(user_id)
