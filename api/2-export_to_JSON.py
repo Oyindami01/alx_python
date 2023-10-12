@@ -8,27 +8,42 @@ import requests
 import sys
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python 2-export_to_JSON.py <employee_id>")
+        sys.exit(1)
+
     employee_id = sys.argv[1]
-    api_request = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
-    api_request1 = requests.get("https://jsonplaceholder.typicode.com/users/{}/todos".format(employee_id))
-    data = api_request.text
-    pjson = json.loads(data)
-    data1 = api_request1.text
-    pjson1 = json.loads(data1)
+    try:
+        employee_id = int(employee_id)
+    except ValueError:
+        print("Employee ID must be an integer.")
+        sys.exit(1)
+
+    api_request = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
+    api_request1 = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos")
+
+    if api_request.status_code != 200 or api_request1.status_code != 200:
+        print("User or tasks not found. Please check the employee ID.")
+        sys.exit(1)
+
+    pjson = api_request.json()
+    pjson1 = api_request1.json()
 
     name_info = pjson['username']
 
-    filename = "{}.json".format(employee_id)
+    filename = f"{employee_id}.json"
 
     # Create the dictionary structure
     result = {
-        employee_id: [{
+        str(employee_id): [{
             "task": item["title"],
             "completed": item["completed"],
             "username": name_info
         } for item in pjson1]
     }
-    # export data to json file
+    # Export data to a JSON file
 
     with open(filename, "w") as outfile:
         json.dump(result, outfile)
+
+    print("Data exported to", filename)
