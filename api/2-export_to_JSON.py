@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-A script to export data in JSON format.
+A script to export data in the JSON format.
 '''
 
 import json
@@ -9,47 +9,37 @@ import sys
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python 2-export_to_JSON.py <employee_id>")
+        print("Usage: python3 export_to_JSON.py <USER_ID>")
         sys.exit(1)
 
     employee_id = sys.argv[1]
 
     try:
-        employee_id = int(employee_id)
-    except ValueError:
-        print("Employee ID must be an integer.")
-        sys.exit(1)
+        api_request = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
+        api_request1 = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}")
 
-    url_user = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    url_todos = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
+        if api_request.status_code == 200 and api_request1.status_code == 200:
+            pjson = api_request.json()
+            pjson1 = api_request1.json()
 
-    user_response = requests.get(url_user)
-    todos_response = requests.get(url_todos)
+            filename = f"{employee_id}.json"
+            
+            # Create the dictionary structure
+            result = {
+                employee_id: [{
+                    "task": item["title"],
+                    "completed": item["completed"],
+                    "username": pjson["username"]
+                } for item in pjson1]
+            }
+            
+            # Export data to a JSON file
+            with open(filename, "w") as outfile:
+                json.dump(result, outfile)
+            print(f"Data exported to {filename}")
+        else:
+            print(f"User with ID {employee_id} not found.")
+            sys.exit(1)
 
-    if user_response.status_code != 200 or todos_response.status_code != 200:
-        print("User or tasks not found. Please check the employee ID.")
-        sys.exit(1)
-
-    user_data = user_response.json()
-    todos_data = todos_response.json()
-
-    user_id = str(user_data['id'])
-    username = user_data['username']
-
-    tasks = [{
-        "task": todo["title"],
-        "completed": todo["completed"],
-        "username": username
-    } for todo in todos_data]
-
-    user_data = {
-        user_id: tasks
-    }
-
-    output_file = f"{user_id}.json"
-
-    with open(output_file, "w") as file:
-        json.dump(user_data, file)
-
-    print(f"Data exported to {output_file}")
-    
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
