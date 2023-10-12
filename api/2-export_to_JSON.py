@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-A script to export data in the JSON format.
+A script to export data in JSON format.
 '''
 
 import json
@@ -13,37 +13,42 @@ if __name__ == "__main__":
         sys.exit(1)
 
     employee_id = sys.argv[1]
+
     try:
         employee_id = int(employee_id)
     except ValueError:
         print("Employee ID must be an integer.")
         sys.exit(1)
 
-    api_request = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
-    api_request1 = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos")
+    url_user = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    url_todos = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
 
-    if api_request.status_code != 200 or api_request1.status_code != 200:
+    user_response = requests.get(url_user)
+    todos_response = requests.get(url_todos)
+
+    if user_response.status_code != 200 or todos_response.status_code != 200:
         print("User or tasks not found. Please check the employee ID.")
         sys.exit(1)
 
-    pjson = api_request.json()
-    pjson1 = api_request1.json()
+    user_data = user_response.json()
+    todos_data = todos_response.json()
 
-    name_info = pjson['username']
+    user_id = str(user_data['id'])
+    username = user_data['username']
 
-    filename = f"{employee_id}.json"
+    tasks = [{
+        "task": todo["title"],
+        "completed": todo["completed"],
+        "username": username
+    } for todo in todos_data]
 
-    # Create the dictionary structure
-    result = {
-        str(employee_id): [{
-            "task": item["title"],
-            "completed": item["completed"],
-            "username": name_info
-        } for item in pjson1]
+    user_data = {
+        user_id: tasks
     }
-    # Export data to a JSON file
 
-    with open(filename, "w") as outfile:
-        json.dump(result, outfile)
+    output_file = f"{user_id}.json"
 
-    print("Data exported to", filename)
+    with open(output_file, "w") as file:
+        json.dump(user_data, file)
+
+    print(f"Data exported to {output_file}")
