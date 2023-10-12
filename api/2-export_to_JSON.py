@@ -16,7 +16,7 @@ user_id = sys.argv[1]
 # Define the URL for the user's tasks
 url = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
 
-# Send a GET request to the API
+# Send a GET request to the API to retrieve the user's tasks
 response = requests.get(url)
 
 # Check if the request was successful
@@ -27,6 +27,20 @@ if response.status_code != 200:
 # Parse the JSON response
 tasks = response.json()
 
+# Check if the retrieved data is a list of tasks
+if not isinstance(tasks, list):
+    print(f"Data retrieved for USER_ID {user_id} is not a list of tasks")
+    sys.exit(1)
+
+# Retrieve the user's information from the API
+user_info_url = f"https://jsonplaceholder.typicode.com/users/{user_id}"
+user_info_response = requests.get(user_info_url)
+user_info = user_info_response.json()
+
+if 'username' not in user_info:
+    print(f"Failed to retrieve username for USER_ID {user_id}")
+    sys.exit(1)
+
 # Create a dictionary to store the tasks
 task_dict = {user_id: []}
 
@@ -35,7 +49,7 @@ for task in tasks:
     task_info = {
         "task": task["title"],
         "completed": task["completed"],
-        "username": user["username"]  # Assuming you have the user's information
+        "username": user_info["username"]
     }
     task_dict[user_id].append(task_info)
 
