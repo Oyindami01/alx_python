@@ -1,17 +1,43 @@
 #!/usr/bin/python3
-"""This module defines a Rectangle class that inherits from BaseGeometry."""
-BaseGeometry = __import__('7-base_geometry').BaseGeometry
+
+class BaseGeometry:
+    def __dir__(self):
+        attributes = super().__dir()
+        return [attribute for attribute in attributes if attribute != '__init_subclass__']
 
 class Rectangle(BaseGeometry):
-    """Represents a rectangle."""
-    def __init__(self, width, height):
-        """Initializes a new Rectangle instance.
-
-        Args:
-            width (int): The width of the rectangle.
-            height (int): The height of the rectangle.
-        """
-        self.integer_validator("width", width)
-        self.integer_validator("height", height)
+    def __init__(self, width=0, height=0):
         self.__width = width
         self.__height = height
+        self.integer_validator("width", width)
+        self.integer_validator("height", height)
+
+    def integer_validator(self, name, value):
+        if not isinstance(value, int):
+            raise TypeError("{} must be an integer".format(name))
+        if value <= 0:
+            raise ValueError("{} must be greater than 0".format(name)
+
+# Test cases
+if __name__ == "__main__":
+    r = Rectangle(1, 4)
+    print(dir(r))
+    print(issubclass(Rectangle, BaseGeometry))
+    
+    try:
+        r = Rectangle(0, 4)
+    except Exception as e:
+        print("[{}] {}".format(e.__class__.__name__, e))
+
+    try:
+        r = Rectangle(3, "3")
+    except Exception as e:
+        print("[{}] {}".format(e.__class__.__name__, e))
+
+    r = Rectangle(3, 5)
+    print(r.__dict__['_Rectangle__width'])
+
+    r = Rectangle(3, 5)
+    print(r.__dict__['_Rectangle__height'])
+
+    r = Rectangle()
