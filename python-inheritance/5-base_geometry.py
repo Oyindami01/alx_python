@@ -1,58 +1,73 @@
-#!/usr/bin/python3
-
 """
-This module defines a function to check if object is exactly an instance of a specified class.
-
-Function:
-    is_same_class(obj, a_class): Checks if object is exactly an instance of the specified class.
-
+A script that starts a Flask Web application and also has
+an additional route/path.
 """
 
+from flask import Flask, render_template
 
-class BaseGeometry:
+app = Flask(__name__)
+"""
+using @app.route to map "/" to the url
+"""
+
+@app.route('/', strict_slashes=False)
+def hello_hbnb():
+        """
+        Route handler for the root URL '/'. Displays "Hello HBNB!".
+        """
+        return "Hello HBNB!"
+
+@app.route('/hbnb', strict_slashes=False)
+def hbnb():
     """
-    This is a class representing the base geometry.
-
-    It can be used as a base class to create other geometry-related classes.
-
-    Attributes:
-        None
-
-    Methods:
-        area(self):Raises an Exception with the message "area() is not implemented".
-        integer_validator(self, name, value): Validates the value as an integer and raises exceptions if invalid.
+    Route handler for '/hbnb'. Displays "HBNB".
     """
-    def __dir__(self):
-        """ Get the list of attributes from the parent class (object class)"""
-        attributes = super().__dir__()
-        """ Exclude __init_subclass__ from the list of attributes"""
-        return [attribute for attribute in attributes if attribute != '__init_subclass__']
-    
-    def area(self):
+    return "HBNB"
+        
+@app.route('/c/<text>', strict_slashes=False)
+def custom_text(text):
+    """
+        Route handler for '/c/<text>'. Displays "C " followed by the value of the text variable.
+        Replace underscore _ symbols with spaces.
+
+        Args:
+            text (str): The text variable captured from the URL.
         """
-        Raises an Exception with the message "area() is not implemented".
+    modified_text = text.replace('_', ' ')
+    return "C {}".format(modified_text)
 
-        This method needs to be implemented in the subclass to calculate
-        the area of the specific geometry.
-        """
-        raise Exception("area() is not implemented")
+@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False)
+def python_text(text):
+    """
+            Route handler for '/python/<text>'. Displays "Python " followed by the value of the text variable.
+            Replace underscore _ symbols with spaces.
 
-    def integer_validator(self, name, value):
-        """
-        Validates the value as an integer and raises exceptions if invalid.
+            Args:
+                text (str): The text variable captured from the URL.
+    """
+    modified_text = text.replace('_', ' ') if text else 'is cool'
+    return "Python {}".format(modified_text)
 
-        Parameters:
-            name (str): The name of the value to be validated.
-            value: The value to be validated.
+@app.route('/number/<int:n>', strict_slashes=False)
+def number(n):
+    """
+            Route handler for '/number/<n>'. Displays "<n> is a number" if n is an integer.
 
-        Raises:
-            TypeError, if the value is not an integer.
-            ValueError, if the value is <= 0.
+            Args:
+                n (int): The number captured from the URL.
+    """
+    return "{} is a number".format(n)
 
-        Returns:
-            None
-        """
-        if not isinstance(value, int):
-            raise TypeError(f"{name} must be an integer")
-        if value <= 0:
-            raise ValueError(f"{name} must be greater than 0")
+@app.route('/number_template/<int:n>', strict_slashes=False)
+def number_template(n):
+            """
+            Route handler for '/number_template/<n>'. Displays an HTML page with "Number: n" in an H1 tag.
+
+            Args:
+                n (int): The number captured from the URL.
+            """
+            return render_template('number_template.html', number=n)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
