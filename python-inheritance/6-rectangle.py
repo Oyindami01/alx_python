@@ -1,12 +1,57 @@
 #!/usr/bin/python3
 
+"""
+This module defines a Rectangle class that inherits from BaseGeometry.
+"""
+
 class BaseGeometry:
-    def __dir__(self):
-        attributes = super().__dir()
-        return [attribute for attribute in attributes if attribute != '__init_subclass__']
+    """
+    This is a base class for geometry-related classes.
+
+    Attributes:
+        None
+
+    Methods:
+        integer_validator(self, name, value): Validates an integer value.
+    """
+
+    def integer_validator(self, name, value):
+        """
+        Validates an integer value.
+
+        Parameters:
+            name (str): The name of the value.
+            value: The value to validate.
+
+        Raises:
+            TypeError: If the value is not an integer.
+            ValueError: If the value is less than or equal to 0.
+        """
+        if not isinstance(value, int):
+            raise TypeError("{} must be an integer".format(name))
+        if value <= 0:
+            raise ValueError("{} must be greater than 0".format(name))
 
 class Rectangle(BaseGeometry):
+    """
+    This class represents a Rectangle.
+
+    Attributes:
+        __width (int): The width of the rectangle.
+        __height (int): The height of the rectangle.
+    """
+
     def __init__(self, width=0, height=0):
+        """
+        Initializes a Rectangle instance with width and height.
+
+        Parameters:
+            width (int): The width of the rectangle (default 0).
+            height (int): The height of the rectangle (default 0).
+
+        Raises:
+            ValueError: If width or height is less than or equal to 0.
+        """
         if width <= 0:
             raise ValueError("width must be greater than 0")
         if height <= 0:
@@ -16,31 +61,3 @@ class Rectangle(BaseGeometry):
         self.__height = height
         self.integer_validator("width", width)
         self.integer_validator("height", height)
-
-    def integer_validator(self, name, value):
-        if not isinstance(value, int):
-            raise TypeError("{} must be an integer".format(name))
-
-# checking
-if __name__ == "__main__":
-    r = Rectangle(1, 4)
-    print(dir(r))
-    print(issubclass(Rectangle, BaseGeometry))
-    
-    try:
-        r = Rectangle(0, 4)
-    except Exception as e:
-        print("[{}] {}".format(e.__class__.__name__, e))
-
-    try:
-        r = Rectangle(3, "3")
-    except Exception as e:
-        print("[{}] {}".format(e.__class__.__name__, e))
-
-    r = Rectangle(3, 5)
-    print(r.__dict__['_Rectangle__width'])
-
-    r = Rectangle(3, 5)
-    print(r.__dict__['_Rectangle__height'])
-
-    r = Rectangle()
