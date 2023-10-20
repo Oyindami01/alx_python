@@ -1,8 +1,4 @@
 class BaseGeometry:
-    def __dir__(self):
-        attributes = super().__dir()
-        return [attribute for attribute in attributes if attribute != '__init_subclass__']
-
     def area(self):
         raise Exception("area() is not implemented")
 
@@ -10,7 +6,7 @@ class BaseGeometry:
         if not isinstance(value, int):
             raise TypeError("{} must be an integer".format(name))
         if value <= 0:
-            raise ValueError("{} must be greater than 0".format(name)
+            raise ValueError("{} must be greater than 0".format(name))
 
 class Rectangle(BaseGeometry):
     def __init__(self, width=0, height=0):
