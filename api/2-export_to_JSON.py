@@ -1,3 +1,4 @@
+#!/bin/usr/python3
 import json
 import requests
 import sys
@@ -29,6 +30,18 @@ def user_info(user_id):
         json.dump(data, jsonfile, indent=2)
 
     print(f'Tasks have been exported to {json_file}')
+
+    # Check if the correct format is met
+    with open(json_file, 'r') as jsonfile:
+        loaded_data = json.load(jsonfile)
+        if isinstance(loaded_data.get(str(user_id), []), list):
+            print("USER_ID's value type is a list of dicts: OK")
+
+    # Check if all tasks are found
+    if len(data[str(user_id)]) == len(tasks):
+        print("All tasks found: OK")
+    else:
+        print(f"Number of tasks missing: {len(tasks) - len(data[str(user_id)])}")
 
 if len(sys.argv) < 2:
     print('Please provide the user ID as an argument.')
