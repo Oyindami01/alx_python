@@ -1,54 +1,32 @@
-import csv
 import json
 import requests
-import sys
 
-def export_tasks_to_csv(user_id):
-    # Define the URL of the API
-    url = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
+def get_user_data(user_id):
+    url = f'https://jsonplaceholder.typicode.com/todos?userId={user_id}'
+    response = requests.get(url)
 
-    try:
-        # Send a GET request to the API
-        response = requests.get(url)
+    if response.status_code != 200:
+        print(f'Error: Request failed with status code {response.status_code}')
+        return None
 
-        # Check if the request was successful
-        if response.status_code == 200:
-            tasks = response.json()
+    tasks = response.json()
+    return tasks
 
-            # Define a dictionary to store tasks for all users
-            all_user_tasks = {}
+def export_all_employees():
+    all_data = {}
 
-            # Loop through the tasks and organize them by user ID
-            for task in tasks:
-                user_id = task["userId"]
-                username = "Replace with actual username"  # Replace with the actual username retrieval logic
-                task_info = {
-                    "username": username,
-                    "task": task["title"],
-                    "completed": task["completed"]
-                }
+    for user_id in range(1, 11):  # Assuming user IDs from 1 to 10
+        user_data = get_user_data(user_id)
+        
+        if user_data:
+            username = user_data[0]["username"]
+            formatted_data = [{"username": username, "task": task["title"], "completed": task["completed"]} for task in user_data]
+            all_data[str(user_id)] = formatted_data
 
-                if user_id not in all_user_tasks:
-                    all_user_tasks[user_id] = []
+    with open('todo_all_employees.json', 'w') as jsonfile:
+        json.dump(all_data, jsonfile, indent=2)
 
-                all_user_tasks[user_id].append(task_info)
+    print('Data for all employees has been exported to todo_all_employees.json')
 
-            # Define the JSON filename
-            json_filename = "todo_all_employees.json"
-
-            # Write the tasks to a JSON file
-            with open(json_filename, 'w') as json_file:
-                json.dump(all_user_tasks, json_file)
-
-            print(f"Tasks exported to {json_filename}")
-        else:
-            print("Failed to retrieve tasks. API request failed.")
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <USER_ID>")
-    else:
-        user_id = int(sys.argv[1])
-        export_tasks_to_csv(user_id)
+if __name__ == '__main__':
+    export_all_employees()
