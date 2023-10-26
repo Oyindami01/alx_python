@@ -1,45 +1,38 @@
-#!/usr/bin/python3
-'''
-A script to export data in the JSON format.
-'''
-
 import json
 import requests
 import sys
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 export_to_JSON.py <USER_ID>")
+def user_info(user_id):
+    # Make a request to the API to get the user's tasks
+    url = f'https://jsonplaceholder.typicode.com/todos?userId={user_id}'
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        print(f'Error: Request failed with status code {response.status_code}')
         sys.exit(1)
 
-    employee_id = sys.argv[1]
+    tasks = response.json()
 
-    try:
-        api_request = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
-        api_request1 = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}")
+    # Create a JSON file with the specified format
+    json_file = f'{user_id}.json'
 
-        if api_request.status_code == 200 and api_request1.status_code == 200:
-            pjson = api_request.json()
-            pjson1 = api_request1.json()
+    data = {str(user_id): []}
+    for task in tasks:
+        
+        data[str(user_id)].append({
+            "task": task['title'],
+            "completed": task['completed'],
+            "username": "Antonette"  
+        })
 
-            filename = f"{employee_id}.json"
-            
-            # Create the dictionary structure
-            result = {
-                employee_id: [{
-                    "task": item["title"],
-                    "completed": item["completed"],
-                    "username": pjson["username"]
-                } for item in pjson1]
-            }
-            
-            # Export data to a JSON file
-            with open(filename, "w") as outfile:
-                json.dump(result, outfile)
-            print(f"Data exported to {filename}")
-        else:
-            print(f"User with ID {employee_id} not found.")
-            sys.exit(1)
+    with open(json_file, 'w') as jsonfile:
+        json.dump(data, jsonfile, indent=2)
 
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+    print(f'Tasks have been exported to {json_file}')
+
+if len(sys.argv) < 2:
+    print('Please provide the user ID as an argument.')
+    sys.exit(1)
+
+user_id = int(sys.argv[1])
+user_info(user_id)
