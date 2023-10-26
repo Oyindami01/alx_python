@@ -33,7 +33,7 @@ def user_info(user_id):
     # Check if the correct format is met
     with open(json_file, 'r') as jsonfile:
         loaded_data = json.load(jsonfile)
-        if isinstance(loaded_data.get(str(user_id), []), list):
+        if str(user_id) in loaded_data and isinstance(loaded_data[str(user_id)], list):
             print("USER_ID's value type is a list of dicts: OK")
 
     # Check if all tasks are found
