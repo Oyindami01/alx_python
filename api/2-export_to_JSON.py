@@ -1,4 +1,3 @@
-#!/bin/usr/python3
 import json
 import requests
 import sys
