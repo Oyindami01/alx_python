@@ -27,6 +27,6 @@ class BaseGeometry:
         attributes = super().__dir__()
 
         # Exclude '__init_subclass__' from the list of attributes.
-        attributes.remove('__init_subclass__')
+        attributes = [attribute for attribute in attributes if attribute != '__init_subclass__']
 
         return attributes
