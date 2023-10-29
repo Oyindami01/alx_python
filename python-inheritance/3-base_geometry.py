@@ -21,7 +21,8 @@ class BaseGeometry:
     """
     def __dir__(self):
         """
-        Get the list of attributes from the parent class (object class).
+        Get the list of attributes from the parent class (object class),
+        excluding '__init_subclass__'.
         """
         attributes = super().__dir__()
 
