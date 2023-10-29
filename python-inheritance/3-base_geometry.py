@@ -1,12 +1,3 @@
-#!/usr/bin/python3
-
-"""
-This module defines a function to check if an object is exactly an instance of a specified class.
-
-Function:
-    is_same_class(obj, a_class): Checks if an object is exactly an instance of the specified class.
-"""
-
 class BaseGeometry:
     """
     This is an empty class representing our base geometry.
@@ -25,5 +16,5 @@ class BaseGeometry:
         """
         attributes = super().__dir__()
 
-        # Exclude __init_subclass__ from the list of attributes.
+       
         return [attribute for attribute in attributes if attribute != '__init_subclass__']
