@@ -7,7 +7,6 @@ Function:
     is_same_class(obj, a_class): Checks if an object is exactly an instance of the specified class.
 """
 class BaseGeometry:
-    pass
     """
     This is an empty class representing our base geometry.
 
