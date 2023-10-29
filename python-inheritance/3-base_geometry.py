@@ -25,6 +25,13 @@ class BaseGeometry:
         """
         attributes = super().__dir__()
 
-        """ Exclude __init_subclass__ from the list of attributes
-        """
-        return [attribute for attribute in attributes if attribute != '__init_subclass__']
+        # Debugging: Print the attributes before exclusion.
+        print("Before exclusion:", attributes)
+
+        # Exclude '__init_subclass__' from the list of attributes.
+        attributes = [attr for attr in attributes if attr != '__init_subclass__']
+
+        # Debugging: Print the attributes after exclusion.
+        print("After exclusion:", attributes)
+
+        return attributes
