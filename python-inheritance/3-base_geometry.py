@@ -23,9 +23,9 @@ class BaseGeometry:
         Get the list of attributes from the parent class (object class),
         excluding '__init_subclass__'.
         """
-        attributes = super().__dir__()
+        attributes = super().__dir()
 
         # Exclude '__init_subclass__' from the list of attributes.
-        attributes = [attribute for attribute in attributes if attribute != '__init_subclass__']
+        attributes = [attr for attr in attributes if attr != '__init_subclass__']
 
         return attributes
